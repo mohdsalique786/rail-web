@@ -182,7 +182,7 @@ def senior_predictive_analysis():
     # In a real app, this would call a machine learning model
     return jsonify({
         "predicted_risk": "High",
-        "component_type": "Elastic Clip",
+        "component_type": "Rail Clip",
         "confidence": 0.88,
         "risk_factors": ["High usage", "Environmental stress", "Age"],
         "model_accuracy_history": {
@@ -329,4 +329,6 @@ def depot_udm_reports():
 
 # --- Run Application ---
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
