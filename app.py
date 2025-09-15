@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt, get_jwt_identity
 from functools import wraps
 from bson import ObjectId
@@ -15,6 +16,7 @@ from reportlab.lib.pagesizes import letter
 
 # --- App Initialization & Configuration ---
 app = Flask(__name__)
+CORS(app)
 
 # Using your specified secret key
 app.config["MONGO_URI"] = "mongodb+srv://railmatrixsih_db_user:CSiHNEUKIInSVvv2@railmatrix.kaguhoo.mongodb.net/railmatrix?retryWrites=true&w=majority"
