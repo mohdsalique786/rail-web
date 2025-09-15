@@ -9,7 +9,6 @@ import os
 import io
 
 # Libraries for report generation
-import pandas as pd
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 # from docx import Document  # Commented out to avoid import error
@@ -257,17 +256,17 @@ def generate_report():
         {"id": 4, "type": "Compliance Summary", "date": "2025-09-12", "result": "Pass", "notes": "All vendors compliant."},
         {"id": 5, "type": "Quality Metrics", "date": "2025-09-14", "result": "Good", "notes": "Quality scores improved by 5%."}
     ]
-    df = pd.DataFrame(mock_data)
 
     if not export_format:
         # Default action: return JSON data
-        return jsonify(df.to_dict(orient='records')), 200
+        return jsonify(mock_data), 200
 
     if export_format == 'excel':
-        output = io.BytesIO()
-        df.to_excel(output, index=False, sheet_name='Report')
-        output.seek(0)
-        return send_file(output, as_attachment=True, download_name=f'{report_type}.xlsx')
+        # Return CSV format instead of Excel
+        csv_content = "id,type,date,result,notes\n"
+        for row in mock_data:
+            csv_content += f"{row['id']},{row['type']},{row['date']},{row['result']},{row['notes']}\n"
+        return csv_content, 200, {'Content-Type': 'text/csv', 'Content-Disposition': 'attachment; filename=report.csv'}
 
     elif export_format == 'pdf':
         output = io.BytesIO()
@@ -275,7 +274,7 @@ def generate_report():
         p.drawString(72, 800, f"{report_type.replace('_', ' ').title()} Report")
         p.drawString(72, 780, f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         y = 750
-        for i, row in df.iterrows():
+        for row in mock_data:
             p.drawString(72, y, f"ID: {row['id']}, Type: {row['type']}, Date: {row['date']}")
             y -= 15
             p.drawString(72, y, f"Result: {row['result']}, Notes: {row['notes']}")
